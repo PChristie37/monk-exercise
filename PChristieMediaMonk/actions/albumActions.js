@@ -2,7 +2,7 @@ const api = 'https://jsonplaceholder.typicode.com';
 
 export function getAlbums() {  
    return function(dispatch, getState){
-    return fetch(api + '/posts', { 
+    return fetch(api + '/albums', { 
        method: 'GET',
      })
      .then((response) => response.json())

@@ -1,7 +1,9 @@
 'use strict'
-
+import {AsyncStorage} from 'react-native'
 import  { createLogger }  from 'redux-logger';
-import { createStore, applyMiddleware } from "redux";
+import { compose, createStore, applyMiddleware } from "redux";
+
+import { autoRehydrate, persistStore } from 'redux-persist';
 import thunk from "redux-thunk";
 import getRootReducer from "./../reducers";
 
@@ -10,11 +12,35 @@ const middleware = () => {
 }
 
 export default function getStore(navReducer) {
+    // const store = createStore(
+    //     getRootReducer(navReducer),
+    //     middleware(),
+    //     applyMiddleware(thunk)
+    // );
+
     const store = createStore(
-        getRootReducer(navReducer),
+    	getRootReducer(navReducer),
         middleware(),
-        applyMiddleware(thunk)
+        applyMiddleware(thunk),
+    	autoRehydrate(),
     );
 
+    persistStore(store, {storage: AsyncStorage}, () => {
+    	console.log('restored')
+    });
     return store;
 }
+
+
+
+
+//  let store = compose(
+//     	getRootReducer(navReducer),
+//         middleware(),
+//         applyMiddleware(thunk),
+//     	autoRehydrate(),
+//     )(createStore);
+
+//     persistStore(store);
+
+// export default store;

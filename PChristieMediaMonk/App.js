@@ -47,7 +47,8 @@ class AppWithNavigationState extends Component {
 
 const store = getStore(navReducer);
 
-export default function wpos3() {
+export default function PChristieMediaMonk() {
+
     return (
         <Provider store={store}>
             <AppWithNavigationState />
