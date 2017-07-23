@@ -1,52 +1,51 @@
 import React, { Component } from 'react';
-import { Button, LayoutAnimation, StyleSheet, Text, View, TextInput, Image } from 'react-native';
-
-
-//import { login } from "./../../actions/userActions";
-
+import { Image, ScrollView, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 import { connect, thunk } from "react-redux";
 import { NavigationActions, addNavigationHelpers } from 'react-navigation';
+import { bindActionCreators } from 'redux';
 import * as actions from  "./../../actions/albumActions";
 
-import {bindActionCreators} from 'redux';
-
+import ListDetails from './../customComponents/ListDetails';
 
 
 class PhotoList extends Component {
   constructor() {
     super();
-    this.state= {
-    
-    }
   }
-
-  /* Renders not Header */
-  static navigationOptions = {
-   // header: null
-  };
   
- onPressLearnMore = () => {
- 
+ onLearnMore = (album) => {
+  this.props.navigation.navigate('AlbumDetails', {album:album});
  }
   
-
   render() { 
     const {
       albumsFulfilled,
       albums,
     } = this.props.state.album;
 
+    var albumList;
+    if(albumsFulfilled){
+      albumList =<ScrollView>
+                    <View style={styles.container}>
+                    {this.props.state.album.albums.slice(0, 100).map((album,i) => (
+                      <View key={album.id} style={{padding:5}}>
+                        <TouchableHighlight onPress={() => this.onLearnMore(album)}> 
+                          <Image style={styles.image} source={{uri:album.thumbnailUrl}} />
+                        </TouchableHighlight>
+                      </View>  
+                 ))}
+                  </View>
+                </ScrollView>
+                     
+    }else{
+     albumList = <Text>Loading...</Text>    
+    }
+
       return (
         <View style={{flex:1}}>
-          
-          <Button
-            onPress={this.onPressLearnMore}
-            title="Learn More"
-            color="#841584"
-          />     
-
-          <Text>{albumsFulfilled ? this.props.state.album.albums[0].title : null}</Text> 
-          <Text>{this.state.didI}</Text>  
+          <View> 
+          {albumsFulfilled ? albumList : null}
+          </View>
         </View>
       
       );
@@ -63,25 +62,14 @@ export default connect(state => ({
 )(PhotoList);
 
 const styles = StyleSheet.create({
-  centering: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 8,
+  container: {
+    flex: 1, 
+    flexDirection:'row', 
+    justifyContent: 'center', 
+    flexWrap:"wrap"
   },
   image: {
-    width: 208, 
-    height: 77
-  },
-  text: {
-    fontSize:22, 
-    color:'#4891a1',
-  },
-  textInput:{
-    height: 40, 
-    width: 250, 
-    backgroundColor:'white', 
-    borderColor: '#4891a1', 
-    borderWidth: 1,
-    textAlign:'center'
+    width: 150, 
+    height: 150
   },
 });

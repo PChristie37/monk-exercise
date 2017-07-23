@@ -25,14 +25,8 @@ export default function albums(state = initialState, action) {
             }
             return {
                 ...state,
-                //persistedState: action.payload,
                 albums: action.payload.album.albums,
                 albumsFulfilled: action.payload.album.albumsFulfilled,  
-            }
-        case 'STORE_RESET' :
-            return {
-                ...state,
-                albums:{},  
             }
 
         default:

@@ -1,5 +1,4 @@
 import React from 'react';
-
 import AlbumDetails from './components/albumDetails/AlbumDetails';
 import Home from './components/home/Home';
 import PhotoDetail from './components/home/PhotoDetail';
@@ -13,21 +12,18 @@ export const HomeTabs = TabNavigator({
     screen: Home,
     navigationOptions: {
         tabBarLabel: 'Albums',
-        //tabBarIcon: ({ tintColor }) => <Icon name='people' size={30} color={tintColor} />, 
     },
   },
   PhotoDetail: {
     screen: PhotoDetail,
     navigationOptions: {
-        tabBarLabel: 'Photo',
-        //tabBarIcon: ({ tintColor }) => <Icon name="work" size={30} color={tintColor} />
+        tabBarLabel: 'Album Covers',
     },
   },    
   PhotoList: {
     screen: PhotoList,
     navigationOptions: {
-        tabBarLabel: 'Photo Details',
-        //tabBarIcon: ({ tintColor }) => <Icon name="mode-comment" size={30} color={tintColor} />
+        tabBarLabel: 'Photos',
     },
   },
 }, {

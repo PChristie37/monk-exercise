@@ -1,5 +1,6 @@
 const api = 'https://jsonplaceholder.typicode.com';
 
+/* Fetches Photos from jsonplaceholder and dispatches to reducers */
 export function getAlbums() {  
    return function(dispatch, getState){
     return fetch(api + '/photos', { 

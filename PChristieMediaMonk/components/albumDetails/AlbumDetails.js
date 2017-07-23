@@ -1,56 +1,56 @@
 import React, { Component } from 'react';
-import { Button, StyleSheet, Text, View, Image, ScrollView } from 'react-native';
-
+import { ScrollView, StyleSheet, Text, View  } from 'react-native';
 import { NavigationActions, addNavigationHelpers } from 'react-navigation';
-
-import * as actions from  "./../../actions/albumActions";
-
-import {bindActionCreators} from 'redux';
+import { Button } from 'react-native-elements'
+import { bindActionCreators } from 'redux';
 import { connect, thunk } from "react-redux";
+import * as actions from  "./../../actions/albumActions";
 import Details from './../customComponents/Details'
 
 class AlbumDetails extends Component {
   constructor() {
     super();
-    this.state= {
-    }
   }
+  
+  /* Takes album id which is 1 higher then the next objects placement and grabs that from store, then navigates back to AlbumDetails with the new Album */
+  onPressNext = (id) => {
+    var nextAlbum = id;
+    if(nextAlbum > 4999){
+      nextAlbum = 0; //Should be size of store's albums.
+    }
+    console.log(nextAlbum);
+    this.props.navigation.navigate('AlbumDetails', {album:this.props.state.album.albums[nextAlbum]});
+  };
 
-componentWillMount() {
-  console.log(this)
-}
-  /* Renders not Header */
-  static navigationOptions = {
-   // header: null
+  /* Takes album id and subtracts 2 and grabs that from store, then navigates back to AlbumDetails with the new Album */
+  onPressPrevious = (id) => {
+    var previousAlbum = id - 2;
+    if(previousAlbum < 0){
+       previousAlbum = previousAlbum + 4999; //Should be size of store's albums.
+    }
+    this.props.navigation.navigate('AlbumDetails', {album:this.props.state.album.albums[previousAlbum]});
   };
   
- onPressNext = (id) => {
-  console.log(id)
-  const nextAlbum = id + 1;
-  console.log(nextAlbum);
-  console.log(this.props.state.album.albums[nextAlbum]);
-  this.props.navigation.navigate('AlbumDetails', {album:this.props.state.album.albums[nextAlbum]});
- }
-  
-
+  /* Navigates User back to the Home Page */
+  onPressHome = () => {
+    this.props.navigation.navigate('Home');
+  };
 
   render() { 
     const { 
-        albumId,
-        id,
-        thumbnailUrl,
-        title,
-        url
-      } = this.props.navigation.state.params.album;
+        album
+      } = this.props.navigation.state.params;
 
     return (
-      <View>
-        <Details albumId={albumId} id={id} thumbnailUrl={thumbnailUrl} title={title} url={url} />
-        <Button
-          onPress={() =>this.onPressNext(id)}
-          title="Next"
-          color="#841584"
-        />
+      <View style={{flex:1}}>
+       <View style={styles.buttonContainer}>
+          <Button buttonStyle={styles.button} backgroundColor="#4891a1" onPress={()=>this.onPressPrevious(album.id)} title='Previous' />
+          <Button buttonStyle={styles.button} backgroundColor="#4891a1" onPress={()=>this.onPressHome()} title='Home' />
+          <Button buttonStyle={styles.button} backgroundColor="#4891a1" onPress={()=>this.onPressNext(album.id)} title='Next' />
+        </View>
+        <View style={styles.detailsContainer}>
+          <Details album={album} />
+        </View>
       </View>
       );
     }
@@ -66,5 +66,18 @@ export default connect(state => ({
 
 
 const styles = StyleSheet.create({
-  
+  button:{
+    width: 150,
+    marginTop: 10
+  },
+  buttonContainer:{
+    flex:.2, 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    paddingBottom: 10
+  },
+  detailsContainer:{
+    flex:3, 
+    justifyContent: 'flex-start'
+  },
 });

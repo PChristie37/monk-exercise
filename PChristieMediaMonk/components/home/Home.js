@@ -1,50 +1,38 @@
 import React, { Component } from 'react';
-import { Button, StyleSheet, Text, View, Image, ScrollView } from 'react-native';
-
+import { ScrollView, Text, View } from 'react-native';
 import { connect, thunk } from "react-redux";
 import { NavigationActions, addNavigationHelpers } from 'react-navigation';
-import * as actions from  "./../../actions/albumActions";
-
-import {bindActionCreators} from 'redux';
-
+import { bindActionCreators } from 'redux';
 import { List, ListItem } from 'react-native-elements';
+import * as actions from  "./../../actions/albumActions";
 
 
 class Home extends Component {
   constructor() {
     super();
-    this.state= {
-      didI:"no",
-    }
   }
 
-componentDidMount() {
-  this.timer = setTimeout(() => {
-    if(!this.props.state.album.albumsFulfilled){
-      this.props.actions.getAlbums()
-          .then(() =>{ 
-            console.log("gotem");
-            this.setState({didI:"yes"})
-          });
-    }
-  }, 2000);
-}
+  /* Delays for 2 seconds, allowing for redux-persist to fill store again */
+  componentDidMount() {
+    this.timer = setTimeout(() => {
+      if(!this.props.state.album.albumsFulfilled){
+        this.props.actions.getAlbums()
+            .then(() =>{ 
+              console.log("First Fetch");
+            });
+      }
+    }, 2000);
+  }
 
-componentWillUnmount() {
-  clearTimeout(this.timer);
-}
+  /* Unmounts the timer, so no endless loop */
+  componentWillUnmount() {
+    clearTimeout(this.timer);
+  }
 
-
-  /* Renders not Header */
-  static navigationOptions = {
-   // header: null
-  };
-  
- onLearnMore = (album) => {
-  console.log(album)
-  //console.log(this.props.state.album.albums.slice(0, size).map(i => {})
-  this.props.navigation.navigate('AlbumDetails', {album:album});
- }
+  /* Navigates to AlbumDetails with Payload of the Album as prop */
+  onLearnMore = (album) => {
+    this.props.navigation.navigate('AlbumDetails', {album:album});
+  }
   
 
   render() { 
@@ -53,13 +41,8 @@ componentWillUnmount() {
       albums,
     } = this.props.state.album;
 
-    const size = 3;
-    // const items = this.props.state.album.albums.slice(0, size).map(i => {
-    //      <Text key={i.id}>{i.id}</Text>
-    // }
 
-    //const albumList = <Text>loading</Text>
-
+    /* Conditionally Rendering on if we have fetched the Album Data yet, then maps the first 100 into a listItem */
     var albumList;
     if(albumsFulfilled){
           albumList = <List containerStyle={{borderBottomColor: "#4891a1"}}>
@@ -76,24 +59,18 @@ componentWillUnmount() {
                        ))}
                      </List>
     }else{
-     albumList = <Text>Hi</Text>    
+     albumList = <Text>Loading...</Text>    
     }
       
-
-
       return (
         <View style={{flex:1}}>
-          <Text>{albumsFulfilled ? this.props.state.album.albums[0].title : null}</Text> 
-          <Text>{this.state.didI}</Text>
           <ScrollView>
-          {albumsFulfilled ? albumList : null}
+            {albumsFulfilled ? albumList :<Text>Loading...</Text>}
           </ScrollView>  
         </View>
-      
       );
-    }
   }
-
+}
 
 export default connect(state => ({
     state: state
@@ -103,26 +80,3 @@ export default connect(state => ({
   })
 )(Home);
 
-const styles = StyleSheet.create({
-  centering: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 8,
-  },
-  image: {
-    width: 208, 
-    height: 77
-  },
-  text: {
-    fontSize:22, 
-    color:'#4891a1',
-  },
-  textInput:{
-    height: 40, 
-    width: 250, 
-    backgroundColor:'white', 
-    borderColor: '#4891a1', 
-    borderWidth: 1,
-    textAlign:'center'
-  },
-});
