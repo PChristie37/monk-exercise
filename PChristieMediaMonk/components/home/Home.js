@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-import { Button, LayoutAnimation, StyleSheet, Text, View, TextInput, Image } from 'react-native';
-
-
-//import { login } from "./../../actions/userActions";
+import { Button, StyleSheet, Text, View, Image, ScrollView } from 'react-native';
 
 import { connect, thunk } from "react-redux";
 import { NavigationActions, addNavigationHelpers } from 'react-navigation';
@@ -10,26 +7,16 @@ import * as actions from  "./../../actions/albumActions";
 
 import {bindActionCreators} from 'redux';
 
+import { List, ListItem } from 'react-native-elements';
 
 
 class Home extends Component {
   constructor() {
     super();
     this.state= {
-     
+      didI:"no",
     }
   }
-
-  // componentWillMount() {
-  //   console.log(this)
-
-  //   // if(!this.props.state.album.albumsFulfilled){
-      
-
-      
-  //   // }
-    
-  // }
 
 componentDidMount() {
   this.timer = setTimeout(() => {
@@ -37,9 +24,10 @@ componentDidMount() {
       this.props.actions.getAlbums()
           .then(() =>{ 
             console.log("gotem");
+            this.setState({didI:"yes"})
           });
     }
-  }, 1000);
+  }, 2000);
 }
 
 componentWillUnmount() {
@@ -52,12 +40,10 @@ componentWillUnmount() {
    // header: null
   };
   
- onPressLearnMore = () => {
-  console.log(this.props)
-   this.props.actions.getAlbums()
-          .then(() =>{ 
-            console.log("gotem");
-          });
+ onLearnMore = (album) => {
+  console.log(album)
+  //console.log(this.props.state.album.albums.slice(0, size).map(i => {})
+  this.props.navigation.navigate('AlbumDetails', {album:album});
  }
   
 
@@ -67,14 +53,41 @@ componentWillUnmount() {
       albums,
     } = this.props.state.album;
 
+    const size = 3;
+    // const items = this.props.state.album.albums.slice(0, size).map(i => {
+    //      <Text key={i.id}>{i.id}</Text>
+    // }
+
+    //const albumList = <Text>loading</Text>
+
+    var albumList;
+    if(albumsFulfilled){
+          albumList = <List containerStyle={{borderBottomColor: "#4891a1"}}>
+                      {this.props.state.album.albums.slice(0, 100).map((album,i) => (
+                         <ListItem
+                           chevronColor="#4891a1"
+                           key={album.id}
+                           title={album.id}
+                           subtitle={album.title}
+                           onPress={() =>this.onLearnMore(album)}
+                           titleStyle={{color:'black'}}
+                           subtitleStyle={{color:'#4891a1'}}
+                         />
+                       ))}
+                     </List>
+    }else{
+     albumList = <Text>Hi</Text>    
+    }
+      
+
+
       return (
         <View style={{flex:1}}>
-          
-          <Button
-            onPress={this.onPressLearnMore}
-            title="Learn More"
-            color="#841584"
-          />       
+          <Text>{albumsFulfilled ? this.props.state.album.albums[0].title : null}</Text> 
+          <Text>{this.state.didI}</Text>
+          <ScrollView>
+          {albumsFulfilled ? albumList : null}
+          </ScrollView>  
         </View>
       
       );

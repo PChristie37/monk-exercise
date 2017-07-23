@@ -25,9 +25,11 @@ export default function getStore(navReducer) {
     	autoRehydrate(),
     );
 
-    persistStore(store, {storage: AsyncStorage}, () => {
+
+    persistStore(store, { blacklist: ['nav'], storage: AsyncStorage}, () => {
     	console.log('restored')
     });
+    
     return store;
 }
 

@@ -17,8 +17,15 @@ export default function albums(state = initialState, action) {
                 albumsError: action.payload,   
             }
         case 'persist/REHYDRATE' :
+            if(!action.payload.album){
+                return {
+                 albums:{},
+                 albumsFulfilled: false,
+                }
+            }
             return {
                 ...state,
+                //persistedState: action.payload,
                 albums: action.payload.album.albums,
                 albumsFulfilled: action.payload.album.albumsFulfilled,  
             }
